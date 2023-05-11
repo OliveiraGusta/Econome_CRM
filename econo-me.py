@@ -1,13 +1,14 @@
 # Gustavo Rodrigues e Mateus Marana
 
 menu = [
-    '--------------------',
-    '$   ECONO-ME BANK  $',
-    '--------------------',
+    '',
+    '------------------------------------------',
+    '$      |      ECONO-ME BANK      |       $',
+    '------------------------------------------',
     '',
     'Usuarios',
     ' Digite 1 - Cadastrar Novo Cliente',
-    ' Digite 2 - Apagar Cliente pelo Cpf',
+    ' Digite 2 - Apagar Cliente pelo CPF',
     ' Digite 3 - Listar os Clientes Existentes',
     '',
     'Conta',
@@ -73,10 +74,10 @@ def apagarCliente():
             return
     print()
     print("Usuário não encontrado.")
-    print()
 
 # Função Exibir os Clientes Cadastrados
 def listarClientes():
+   
     print("------------------------------------------")
     print("|   Nome   |      CPF       |     Valor  |")
     print("------------------------------------------")
@@ -84,27 +85,23 @@ def listarClientes():
         nome = usuario['nome']
         cpf = usuario['cpf']
         saldo = conta['saldo']
-        print(f"| {nome:<8} | {cpf:<14} |   R${saldo:<14}")
+        print(f"| {nome:<8} | {cpf:<14} | R${saldo:<14}")
     print("------------------------------------------")
 
 # Função Debitar Qualquer Valor
 def debitarValor():
-    print()
     print("Entrou na funcao Debitar Valor")
 
 # Função Depositar Qualquer Valor
 def depositaValor():
-    print()
     print("Entrou na funcao Deposita Valor")
 
 # Função Exibir Extrato da Conta
 def extratoDaConta():
-    print()
     print("Entrou na funcao Extrato da Conta ")
 
 # Função Trasferir o Valor
 def transferirValor():
-    print()
     origem = input(" Digite o CPF da conta de origem: ")
     destino = input(" Digite o CPF da conta de destino: ")
     valor = float(input(" Digite o valor a ser transferido: "))
@@ -118,41 +115,42 @@ def transferirValor():
         if conta['usuario']['cpf'] == destino:
             conta_destino = conta
 
-        if conta_origem is None:
-            print("Conta de origem não encontrada.")
-            return
-        if conta_destino is None:
-            print("Conta de destino não encontrada.")
-            return
-        if conta_origem['saldo'] >= valor:
-            conta_origem['saldo'] -= valor
-            conta_destino['saldo'] += valor
-            print("Transferência realizada com sucesso!")
-        else:
-            print("Saldo insuficiente para realizar a transferência.")
+    if conta_origem is None:
+        print("Conta de origem não encontrada.")
+        return
+    if conta_destino is None:
+        print("Conta de destino não encontrada.")
+        return
+    if conta_origem['saldo'] >= valor:
+        conta_origem['saldo'] -= valor
+        conta_destino['saldo'] += valor
+        print("Transferência realizada com sucesso!")
+    else:
+        print("Saldo insuficiente para realizar a transferência.")
 
 # Função para Acessar os Investimentos
 def investimentos():
-    print()
     print("Entrou na funcao Investimentos")
 
 opcoes_menu = {
-    '1': novoCliente,
-    '2': apagarCliente,
-    '3': listarClientes,
+    '1': novoCliente, # OK
+    '2': apagarCliente, # OK
+    '3': listarClientes, # OK
     '4': debitarValor,
     '5': depositaValor,
     '6': extratoDaConta,
-    '7': transferirValor,
-    '8': investimentos
+    '7': transferirValor, # OK
+    '8': investimentos  
 }
 
 while True:
     exibir_menu()
     decisao = input("Escolha uma opção: ")
+
     if decisao == '9':
         break
-    if decisao in opcoes_menu:
+    elif decisao in opcoes_menu:
+        print()
         opcoes_menu[decisao]()
     else:
         print("Opção inválida. Digite um número válido.")
