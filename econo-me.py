@@ -2,7 +2,7 @@
 
 menu = [
     '--------------------',
-    '$$ ECONO-ME BANK $$',
+    '$   ECONO-ME BANK  $',
     '--------------------',
     '',
     'Usuarios',
@@ -27,12 +27,11 @@ appBanco = {
     'contas': []
 }
 
-
 def exibir_menu():
     for linha in menu:
         print(linha)
 
-
+# Função Cadastrar novo Clientes Cadastrados
 def novoCliente():
     nome = input(" Digite o nome do usuário: ")
     cpf = input(" Digite o CPF do usuário: ")
@@ -40,11 +39,6 @@ def novoCliente():
     senha = input(" Digite a senha do usuário: ")
     valor = float(input(" Digite o valor inicial da conta: "))
 
-    cadastrarCliente(nome, senha, cpf, valor, tipoConta, )
-
-
-# Função Cadastrar novo Clientes Cadastrados
-def cadastrarCliente(nome, senha, cpf, valor, tipoConta):
     for usuario in appBanco['usuarios']:
         if usuario['cpf'] == cpf:
             print()
@@ -67,7 +61,6 @@ def cadastrarCliente(nome, senha, cpf, valor, tipoConta):
     print("Usuário cadastrado com sucesso!")
     print()
 
-
 # Função Apagar os Clientes Cadastrados
 def apagarCliente():
     cpf = input(" Digite o CPF do usuário a ser excluído: ")
@@ -83,8 +76,6 @@ def apagarCliente():
     print()
 
 # Função Exibir os Clientes Cadastrados
-
-
 def listarClientes():
     print("------------------------------------------")
     print("|   Nome   |      CPF       |     Valor  |")
@@ -96,37 +87,28 @@ def listarClientes():
         print(f"| {nome:<8} | {cpf:<14} |   R${saldo:<14}")
     print("------------------------------------------")
 
-
 # Função Debitar Qualquer Valor
-
-
 def debitarValor():
     print()
     print("Entrou na funcao Debitar Valor")
 
 # Função Depositar Qualquer Valor
-
-
 def depositaValor():
     print()
     print("Entrou na funcao Deposita Valor")
 
 # Função Exibir Extrato da Conta
-
-
 def extratoDaConta():
     print()
     print("Entrou na funcao Extrato da Conta ")
 
 # Função Trasferir o Valor
-def transferir():
+def transferirValor():
+    print()
     origem = input(" Digite o CPF da conta de origem: ")
     destino = input(" Digite o CPF da conta de destino: ")
     valor = float(input(" Digite o valor a ser transferido: "))
-    transferirValor(origem, destino, valor)
 
-def transferirValor(origem, destino, valor):
-    print()
     conta_origem = None
     conta_destino = None
 
@@ -142,7 +124,6 @@ def transferirValor(origem, destino, valor):
         if conta_destino is None:
             print("Conta de destino não encontrada.")
             return
-
         if conta_origem['saldo'] >= valor:
             conta_origem['saldo'] -= valor
             conta_destino['saldo'] += valor
@@ -155,33 +136,25 @@ def investimentos():
     print()
     print("Entrou na funcao Investimentos")
 
+opcoes_menu = {
+    '1': novoCliente,
+    '2': apagarCliente,
+    '3': listarClientes,
+    '4': debitarValor,
+    '5': depositaValor,
+    '6': extratoDaConta,
+    '7': transferirValor,
+    '8': investimentos
+}
 
-# Painel
 while True:
-
     exibir_menu()
-    decisao = input('O que Deseja?: ')
-    if decisao == '1': novoCliente()
+    decisao = input("Escolha uma opção: ")
+    if decisao == '9':
+        break
+    if decisao in opcoes_menu:
+        opcoes_menu[decisao]()
+    else:
+        print("Opção inválida. Digite um número válido.")
 
-    if decisao == "2": apagarCliente()
-
-    if decisao == '3': listarClientes()
-
-    if decisao == '4':
-        debitarValor()
-
-    if decisao == '5':
-        depositaValor()
-
-    if decisao == '6':
-        extratoDaConta()
-
-    if decisao == '7':
-        transferir()
-
-    if decisao == '8':
-        investimentos()
-
-    if decisao == '9': break
-  
     
