@@ -23,6 +23,7 @@ def main():
         ' Digite 9 - Fechar o programa',
         ''
     ]
+
     appBanco = {
         'usuarios': [],
         'contas': []
@@ -35,6 +36,7 @@ def main():
         ' Digite 5 - Poupança',
         ' Digite 6 - Cancelar',
     ]
+
     opcoes_investimentos = {
         '1': print('Entrou em Investimento Criptmoedas 1'),
         '2': print('Entrou em Investimento Fundo Conservador 2'),
@@ -42,7 +44,6 @@ def main():
         '4': print('Entrou em Investimento Fundo de Ações 4'),
         '5': print('Entrou em Investimento Poupança 5'),
     }
-
     def limpar_tela():
         linhas_terminal = 40  # número de linhas do terminal
         for _ in range(linhas_terminal):
@@ -72,7 +73,8 @@ def main():
         conta = {
             'usuario': usuario,
             'saldo': valor,
-            'tipoConta': tipo_conta
+            'tipoConta': tipo_conta,
+            'transacoes':[]
         }
         appBanco['usuarios'].append(usuario)
         appBanco['contas'].append(conta)
@@ -111,22 +113,44 @@ def main():
         senha = input("Digite a senha do usuário: ")
         for usuario, conta in zip(appBanco['usuarios'], appBanco['contas']):
             if usuario['cpf'] == cpf and usuario['senha'] == senha:
-                conta['saldo'] -= valor
+                if conta['saldo'] >= valor:
+                    conta['saldo'] -= valor
+                    conta['transacoes'].append({'tipo': 'debito', 'valor': valor})
+                    print('Valor debitado com sucesso')
+                else:
+                    print("Saldo insuficiente para debitar valor.")
             return
         print("\nCPF ou senha incorretos.")
 
     def depositar_valor():
+        print("Entrou na função Depositar Valor")
         cpf = input("Digite o CPF do usuário: ")
         valor = float(input("Digite o valor a ser debitado: "))
         senha = input("Digite a senha do usuário: ")
         for usuario, conta in zip(appBanco['usuarios'], appBanco['contas']):
             if usuario['cpf'] == cpf and usuario['senha'] == senha:
                 conta['saldo'] += valor
+                conta['transacoes'].append({'tipo': 'deposito', 'valor': valor})
+                print("Valor depositado com sucesso!")
             return
         print("\nCPF ou senha incorretos.")
 
     def extrato_da_conta():
         print("Entrou na função Extrato da Conta")
+        cpf = input("Digite o CPF do usuário: ")
+        senha = input("Digite a senha do usuário: ")
+        for usuario, conta in zip(appBanco['usuarios'], appBanco['contas']):
+            if usuario['cpf'] == cpf and usuario['senha'] == senha:
+                print(f"Extrato da conta de {usuario['nome']}:")
+                print(f"Saldo atual: R$ {conta['saldo']:.2f}")
+                print("Histórico de transações:")
+                for transacao in conta['transacoes']:
+                    if transacao['tipo'] == 'debito':
+                        print(f"- Debitado R$ {transacao['valor']:.2f}")
+                    else:
+                        print(f"+ Depositado R$ {transacao['valor']:.2f}")
+                return
+        print("\nCPF ou senha incorretos.")
 
     def transferir_valor():
         origem = input("Digite o CPF da conta de origem: ")
@@ -155,8 +179,6 @@ def main():
         else:
             print("Saldo insuficiente para realizar a transferência.")
 
-
-    
     def investimentos():
         cpf = input("Digite o CPF do usuário que vai investir: ")
         senha = input("Digite a senha do usuário: ")
@@ -173,7 +195,6 @@ def main():
                     print("Opção inválida. Digite um número válido.")
                     return
                 print("\nCPF ou senha incorretos.")
-
 
     opcoes_menu = {
         '1': novo_cliente,
