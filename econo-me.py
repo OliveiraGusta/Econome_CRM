@@ -1,4 +1,7 @@
 # Gustavo Rodrigues e Mateus Marana
+
+import random
+
 def main():
 
     menu = [
@@ -28,22 +31,32 @@ def main():
         'usuarios': [],
         'contas': []
     }
-    investimentos = [
+
+    investimentos_menu = [
+        '',
         ' Digite 1 - Criptmoedas',
         ' Digite 2 - Fundo Conservador',
         ' Digite 3 - Fundo Imobiliario',
         ' Digite 4 - Fundo de Ações',
         ' Digite 5 - Poupança',
         ' Digite 6 - Cancelar',
+        ''
     ]
 
+    def gerar_valor_aleatorio():
+        return random.random()
+
     opcoes_investimentos = {
-        '1': print('Entrou em Investimento Criptmoedas 1'),
-        '2': print('Entrou em Investimento Fundo Conservador 2'),
-        '3': print('Entrou em Investimento Fundo Imobiliario 3'),
-        '4': print('Entrou em Investimento Fundo de Ações 4'),
-        '5': print('Entrou em Investimento Poupança 5'),
+        '1': gerar_valor_aleatorio,
+        '2': gerar_valor_aleatorio,
+        '3': gerar_valor_aleatorio,
+        '4': gerar_valor_aleatorio,
+        '5': gerar_valor_aleatorio,
     }
+
+    def calcular_retorno_investimento(valor_investido, taxa_retorno):
+        return valor_investido * (1 + taxa_retorno)
+    
     def limpar_tela():
         linhas_terminal = 40  # número de linhas do terminal
         for _ in range(linhas_terminal):
@@ -74,7 +87,7 @@ def main():
             'usuario': usuario,
             'saldo': valor,
             'tipoConta': tipo_conta,
-            'transacoes':[]
+            'transacoes': []
         }
         appBanco['usuarios'].append(usuario)
         appBanco['contas'].append(conta)
@@ -115,7 +128,8 @@ def main():
             if usuario['cpf'] == cpf and usuario['senha'] == senha:
                 if conta['saldo'] >= valor:
                     conta['saldo'] -= valor
-                    conta['transacoes'].append({'tipo': 'debito', 'valor': valor})
+                    conta['transacoes'].append(
+                        {'tipo': 'debito', 'valor': valor})
                     print('Valor debitado com sucesso')
                 else:
                     print("Saldo insuficiente para debitar valor.")
@@ -123,20 +137,19 @@ def main():
         print("\nCPF ou senha incorretos.")
 
     def depositar_valor():
-        print("Entrou na função Depositar Valor")
         cpf = input("Digite o CPF do usuário: ")
-        valor = float(input("Digite o valor a ser debitado: "))
         senha = input("Digite a senha do usuário: ")
+        valor = float(input("Digite o valor a ser debitado: "))
         for usuario, conta in zip(appBanco['usuarios'], appBanco['contas']):
             if usuario['cpf'] == cpf and usuario['senha'] == senha:
                 conta['saldo'] += valor
-                conta['transacoes'].append({'tipo': 'deposito', 'valor': valor})
+                conta['transacoes'].append(
+                    {'tipo': 'deposito', 'valor': valor})
                 print("Valor depositado com sucesso!")
             return
         print("\nCPF ou senha incorretos.")
 
     def extrato_da_conta():
-        print("Entrou na função Extrato da Conta")
         cpf = input("Digite o CPF do usuário: ")
         senha = input("Digite a senha do usuário: ")
         for usuario, conta in zip(appBanco['usuarios'], appBanco['contas']):
@@ -180,21 +193,27 @@ def main():
             print("Saldo insuficiente para realizar a transferência.")
 
     def investimentos():
-        cpf = input("Digite o CPF do usuário que vai investir: ")
+        cpf = input("Digite o CPF do usuário: ")
         senha = input("Digite a senha do usuário: ")
         for usuario, conta in zip(appBanco['usuarios'], appBanco['contas']):
             if usuario['cpf'] == cpf and usuario['senha'] == senha:
-                investimentos()
+                print(f"Saldo atual: R$ {conta['saldo']:.2f}")
+                for investimento in investimentos_menu:
+                    print(investimento)
                 decisao = input("Escolha uma opção de investimento: ")
-                if decisao == '5':
+                if decisao == '6':
                     return
                 elif decisao in opcoes_investimentos:
-                    print()
-                    opcoes_investimentos[decisao]
+                    valor_investido = float(input("Digite o valor a ser investido: "))
+                    taxa_retorno = opcoes_investimentos[decisao]()
+                    valor_retorno = calcular_retorno_investimento(valor_investido, taxa_retorno)
+                    print(f"Valor de retorno: R${valor_retorno:.2f}")
+                    conta['saldo'] += valor_retorno
+                    return
                 else:
                     print("Opção inválida. Digite um número válido.")
                     return
-                print("\nCPF ou senha incorretos.")
+        print("\nCPF ou senha incorretos.")
 
     opcoes_menu = {
         '1': novo_cliente,
@@ -214,13 +233,12 @@ def main():
         if decisao == '9':
             break
         elif decisao in opcoes_menu:
-            
             print()
             limpar_tela()
             opcoes_menu[decisao]()
         else:
             print("Opção inválida. Digite um número válido.")
 
+
 if __name__ == "__main__":
     main()
-    
