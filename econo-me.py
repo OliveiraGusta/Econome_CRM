@@ -55,7 +55,7 @@ def main():
     }
 
     def calcular_retorno_investimento(valor_investido, taxa_retorno):
-        return valor_investido * (1 + taxa_retorno)
+        return valor_investido * (taxa_retorno)
     
     def limpar_tela():
         linhas_terminal = 40  # número de linhas do terminal
@@ -116,14 +116,14 @@ def main():
             nome = usuario['nome']
             cpf = usuario['cpf']
             saldo = conta['saldo']
-            print(f"| {nome:<8} | {cpf:<14} | R${saldo:<14}")
+            print(f"| {nome:<8} | {cpf:<14} | R${saldo:<14.2f}")
         print("------------------------------------------")
 
     def debitar_valor():
         print("Entrou na função Debitar Valor")
         cpf = input("Digite o CPF do usuário: ")
-        valor = float(input("Digite o valor a ser debitado: "))
         senha = input("Digite a senha do usuário: ")
+        valor = float(input("Digite o valor a ser debitado: "))
         for usuario, conta in zip(appBanco['usuarios'], appBanco['contas']):
             if usuario['cpf'] == cpf and usuario['senha'] == senha:
                 if conta['saldo'] >= valor:
@@ -205,10 +205,14 @@ def main():
                     return
                 elif decisao in opcoes_investimentos:
                     valor_investido = float(input("Digite o valor a ser investido: "))
+                    conta['saldo'] -= valor_investido
                     taxa_retorno = opcoes_investimentos[decisao]()
                     valor_retorno = calcular_retorno_investimento(valor_investido, taxa_retorno)
-                    print(f"Valor de retorno: R${valor_retorno:.2f}")
-                    conta['saldo'] += valor_retorno
+                    if(valor_retorno > 0):
+                        print(f"Valor de retorno: R${valor_retorno:.2f}")
+                        conta['saldo'] += valor_retorno
+                    else:
+                        print("Seu investimento não lucro, infelizmente você perdeu seu dinheiro")
                     return
                 else:
                     print("Opção inválida. Digite um número válido.")
