@@ -156,27 +156,38 @@ def main():
             print(f"| {nome:<8} | {cpf:<14} | R${saldo:<14.2f}")
         print("------------------------------------------")
 
-    def debitar_valor():
+    def debitar_valor():  
         print("Entrou na função Debitar Valor")
         cpf = input("Digite o CPF do usuário: ")
         senha = input("Digite a senha do usuário: ")
         valor = float(input("Digite o valor a ser debitado: "))
+        TARIFA = 6.5
+        conta_saldo = valor + TARIFA
         for usuario, conta in zip(appBanco['usuarios'], appBanco['contas']):
             if usuario['cpf'] == cpf and usuario['senha'] == senha:
                 if conta['saldo'] >= valor:
-                    conta['saldo'] -= valor
-                    conta['transacoes'].append(
+                    if conta['tipoConta'] == 'Premium':
+                        conta['saldo'] -= valor
+                        conta['transacoes'].append(
                         {'tipo': 'debito', 'valor': valor})
-                    print('Valor debitado com sucesso')
+                    
+                        print('Valor debitado com sucesso')
+                    else:
+                        conta['saldo'] -= conta_saldo
+                        conta['transacoes'].append(
+                        {'tipo': 'debito', 'valor': conta_saldo})
+                    
+                        print('Valor debitado com sucesso.Tarifa de R$%.2f cobrada' % TARIFA)
+                        return
                 else:
                     print("Saldo insuficiente para debitar valor.")
-            return
-        print("\nCPF ou senha incorretos.")
+                    return
+            print("\nCPF ou senha incorretos.")
 
     def depositar_valor():
         cpf = input("Digite o CPF do usuário: ")
         senha = input("Digite a senha do usuário: ")
-        valor = float(input("Digite o valor a ser debitado: "))
+        valor = float(input("Digite o valor a ser depositado: "))
         for usuario, conta in zip(appBanco['usuarios'], appBanco['contas']):
             if usuario['cpf'] == cpf and usuario['senha'] == senha:
                 conta['saldo'] += valor
@@ -226,6 +237,7 @@ def main():
             conta_origem['saldo'] -= valor
             conta_destino['saldo'] += valor
             print("Transferência realizada com sucesso!")
+            
         else:
             print("Saldo insuficiente para realizar a transferência.")
 
