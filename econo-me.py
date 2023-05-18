@@ -2,6 +2,32 @@
 
 import random
 
+def salvar_dados_arquivo(dados, nome_arquivo):
+    with open(nome_arquivo, 'w') as arquivo:
+        for usuario, conta in zip(dados['usuarios'], dados['contas']):
+            nome = usuario['nome']
+            cpf = usuario['cpf']
+            tipo_conta = conta['tipoConta']
+            senha = usuario['senha']
+            saldo = conta['saldo']
+            linha = f"{nome},{cpf},{tipo_conta},{senha},{saldo}\n"
+            arquivo.write(linha)
+
+def carregar_dados_arquivo(nome_arquivo):
+    dados = {
+        'usuarios': [],
+        'contas': []
+    }
+    with open(nome_arquivo, 'r') as arquivo:
+        linhas = arquivo.readlines()
+        for linha in linhas:
+            nome, cpf, tipo_conta, senha, saldo = linha.strip().split(',')
+            usuario = {'nome': nome, 'cpf': cpf, 'senha': senha}
+            conta = {'saldo': float(saldo), 'tipoConta': tipo_conta}
+            dados['usuarios'].append(usuario)
+            dados['contas'].append(conta)
+    return dados
+
 def main():
 
     menu = [
@@ -69,7 +95,18 @@ def main():
     def novo_cliente():
         nome = input("Digite o nome do usuário: ")
         cpf = input("Digite o CPF do usuário: ")
-        tipo_conta = input("Digite o tipo da conta: ")
+
+        tipo_conta = input("\nTipo da Conta\n\nDigite 1 - Conta Premium\nDigite 2 - Conta Comum\nDigite o tipo da conta: ")
+        if tipo_conta == '1':
+            print('Cliente Premium!')
+            tipo_conta = 'Premium'
+
+        elif tipo_conta == '2':
+            print('Cliente Comum!')
+            tipo_conta = 'Comum'
+        else:
+            print("Opção inválida. Digite um número válido.")
+            return
         senha = input("Digite a senha do usuário: ")
         valor = float(input("Digite o valor inicial da conta: "))
 
@@ -230,11 +267,14 @@ def main():
         '8': investimentos
     }
 
+    appBanco = carregar_dados_arquivo('dados_banco.txt')
     while True:
         exibir_menu()
+        salvar_dados_arquivo(appBanco, 'dados_banco.txt')
         decisao = input("Escolha uma opção: ")
 
         if decisao == '9':
+            
             break
         elif decisao in opcoes_menu:
             print()
