@@ -1,0 +1,1 @@
+Teste,1,Premium,1,398.0,{'tipo': 'deposito', 'valor': 500.0},{'tipo': 'debito', 'valor': 103.0, 'tarifa': 3.0}

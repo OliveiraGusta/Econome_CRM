@@ -1,6 +1,7 @@
 # Gustavo Rodrigues e Mateus Marana
 
 import random
+import datetime
 
 def salvar_dados_arquivo(dados, nome_arquivo):
     with open(nome_arquivo, 'w') as arquivo:
@@ -88,7 +89,8 @@ def main():
     }
 
     def calcular_retorno_investimento(valor_investido, taxa_retorno):
-        return valor_investido * (taxa_retorno)
+        retorno = random.randint(-1, 2)
+        return valor_investido * (retorno * taxa_retorno)
     
     def limpar_tela():
         linhas_terminal = 40  # número de linhas do terminal
@@ -168,20 +170,25 @@ def main():
         cpf = input("Digite o CPF do usuário: ")
         senha = input("Digite a senha do usuário: ")
         valor = float(input("Digite o valor a ser debitado: "))
-        TARIFA = 6.5
-        conta_saldo = valor + TARIFA
+        VALOR_TARIFA_PREMIUM = 0.03
+        VALOR_TARIFA_COMUM = 0.05
 
+        tarifa_comum = valor * VALOR_TARIFA_COMUM
+        tarifa_premium = valor * VALOR_TARIFA_PREMIUM
+        conta_comum = valor + tarifa_comum
+        conta_premium = valor + tarifa_premium
+        
         for usuario, conta in zip(appBanco['usuarios'], appBanco['contas']):
             if usuario['cpf'] == cpf and usuario['senha'] == senha:
                 if conta['saldo'] >= valor:
                     if conta['tipoConta'] == 'Premium':
-                        conta['saldo'] -= valor
-                        conta['transacoes'].append({'tipo': 'debito', 'valor': valor})
-                        print('Valor debitado com sucesso')
+                        conta['saldo'] -= conta_premium
+                        conta['transacoes'].append({'tipo': 'debito', 'valor': conta_premium, 'tarifa': tarifa_premium })
+                        print('Valor debitado com sucesso. Tarifa de R$%.2f cobrada' % tarifa_premium)
                     else:
-                        conta['saldo'] -= conta_saldo
-                        conta['transacoes'].append({'tipo': 'debito', 'valor': conta_saldo})
-                        print('Valor debitado com sucesso. Tarifa de R$%.2f cobrada' % TARIFA)
+                        conta['saldo'] -= conta_comum
+                        conta['transacoes'].append({'tipo': 'debito', 'valor': conta_comum, 'tarifa': tarifa_comum})
+                        print('Valor debitado com sucesso. Tarifa de R$%.2f cobrada' % tarifa_comum)
                     return
                 else:
                     print("Saldo insuficiente para debitar valor.")
@@ -214,13 +221,18 @@ def main():
         for usuario, conta in zip(appBanco['usuarios'], appBanco['contas']):
             if usuario['cpf'] == cpf and usuario['senha'] == senha:
                 print(f"Extrato da conta de {usuario['nome']}:")
-                print(f"Saldo atual: R$ {conta['saldo']:.2f}")
+                print(f"Portador do CPF {usuario['cpf']}")
+                print(f"Com a conta {conta['tipoConta']}")
                 print("Histórico de transações:")
+              
                 for transacao in conta['transacoes']:
+                    tipo = transacao['tipo']
+                    valor = transacao['valor']
+                    tarifa = transacao['tarifa']
                     if transacao['tipo'] == 'debito':
-                        print(f"- Debitado R$ {transacao['valor']:.2f}")
+                        print(f"| {tipo:<8} | {valor:<14.2f} |")
                     else:
-                        print(f"+ Depositado R$ {transacao['valor']:.2f}")
+                        print(f"| {tipo:<8} | {valor:<14.2f} | R${tarifa:<14.2f}")
                 return
         print("\nCPF ou senha incorretos.")
 
@@ -271,6 +283,7 @@ def main():
                         print(f"Valor de retorno: R${valor_retorno:.2f}")
                         conta['saldo'] += valor_retorno
                     else:
+                        print(f"Valor de retorno: R${valor_retorno:.2f}")
                         print("Seu investimento não lucro, infelizmente você perdeu seu dinheiro")
                     return
                 else:
