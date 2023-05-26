@@ -1,7 +1,7 @@
 # Gustavo Rodrigues e Mateus Marana
 
 import random
-import datetime
+from datetime import datetime
 
 def salvar_dados_arquivo(dados, nome_arquivo):
     with open(nome_arquivo, 'w') as arquivo:
@@ -170,6 +170,7 @@ def main():
         cpf = input("Digite o CPF do usuário: ")
         senha = input("Digite a senha do usuário: ")
         valor = float(input("Digite o valor a ser debitado: "))
+        data_hora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         VALOR_TARIFA_PREMIUM = 0.03
         VALOR_TARIFA_COMUM = 0.05
 
@@ -183,11 +184,11 @@ def main():
                 if conta['saldo'] >= valor:
                     if conta['tipoConta'] == 'Premium':
                         conta['saldo'] -= conta_premium
-                        conta['transacoes'].append({'tipo': 'debito', 'valor': conta_premium, 'tarifa': tarifa_premium })
+                        conta['transacoes'].append({'tipo': 'debito', 'valor': conta_premium, 'tarifa': tarifa_premium, 'data_hora': data_hora})
                         print('Valor debitado com sucesso. Tarifa de R$%.2f cobrada' % tarifa_premium)
                     else:
                         conta['saldo'] -= conta_comum
-                        conta['transacoes'].append({'tipo': 'debito', 'valor': conta_comum, 'tarifa': tarifa_comum})
+                        conta['transacoes'].append({'tipo': 'debito', 'valor': conta_comum, 'tarifa': tarifa_comum, 'data_hora': data_hora})
                         print('Valor debitado com sucesso. Tarifa de R$%.2f cobrada' % tarifa_comum)
                     return
                 else:
@@ -203,11 +204,12 @@ def main():
         cpf = input("Digite o CPF do usuário: ")
         senha = input("Digite a senha do usuário: ")
         valor = float(input("Digite o valor a ser depositado: "))
+        data_hora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         
         for usuario, conta in zip(appBanco['usuarios'], appBanco['contas']):
             if usuario['cpf'] == cpf and usuario['senha'] == senha:
                 conta['saldo'] += valor
-                conta['transacoes'].append({'tipo': 'deposito', 'valor': valor})
+                conta['transacoes'].append({'tipo': 'deposito', 'valor': valor, 'tarifa': [], 'data_hora': data_hora})
                 print("Valor depositado com sucesso!")
                 return
         
@@ -229,10 +231,11 @@ def main():
                     tipo = transacao['tipo']
                     valor = transacao['valor']
                     tarifa = transacao['tarifa']
-                    if transacao['tipo'] == 'debito':
-                        print(f"| {tipo:<8} | {valor:<14.2f} |")
+                    data_hora = transacao['data_hora']
+                    if transacao['tipo'] == 'deposito':
+                        print(f"| {data_hora} | {tipo:<8} | {valor:<14.2f} |")
                     else:
-                        print(f"| {tipo:<8} | {valor:<14.2f} | R${tarifa:<14.2f}")
+                        print(f"| {data_hora} | {tipo:<8} | {valor:<14.2f} | R${tarifa:<14.2f}")
                 return
         print("\nCPF ou senha incorretos.")
 
